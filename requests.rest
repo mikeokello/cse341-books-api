@@ -1,0 +1,8 @@
+### Get all books - Local
+GET http://localhost:8080/books
+
+### Get single book b1 - Local
+GET http://localhost:8080/books/b1
+
+### Swagger Docs Local
+GET http://localhost:8080/api-docs
