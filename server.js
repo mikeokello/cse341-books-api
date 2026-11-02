@@ -2,7 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const mongodb = require('./db/connect');
 const swaggerUi = require('swagger-ui-express');
-const fs = require('fs');
+const swaggerDocument = require('./swagger.json');
 
 dotenv.config();
 const app = express();
@@ -16,13 +16,10 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/', require('./routes'));
+// FIX: Swagger BEFORE routes
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// Swagger only if file exists
-if (fs.existsSync('./swagger.json')) {
-  const swaggerDocument = require('./swagger.json');
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-}
+app.use('/', require('./routes'));
 
 mongodb.initDb((err) => {
   if (err) {
