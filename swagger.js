@@ -2,11 +2,11 @@ const swaggerAutogen = require('swagger-autogen')();
 
 const doc = {
   info: {
-    title: 'Books API',
-    description: 'CSE341 W01 Books Web Service - Mike Okello',
+    title: 'Books and Authors API',
+    description: 'CSE 341 W02 Books and Authors API'
   },
-  host: 'localhost:8080',
-  schemes: ['http', 'https'],
+  host: 'cse341-books-api-k04i.onrender.com',
+  schemes: ['https', 'http']
 };
 
 const outputFile = './swagger.json';

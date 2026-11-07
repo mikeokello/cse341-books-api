@@ -1,10 +1,8 @@
-const express = require('express');
-const router = express.Router();
+const router = require('express').Router();
+const booksRouter = require('./books');
+const authorsRouter = require('./authors');
 
-router.use('/books', require('./books'));
-
-router.get('/', (req, res) => {
-  res.send('Books API - Use /books');
-});
+router.use('/books', booksRouter);
+router.use('/authors', authorsRouter);
 
 module.exports = router;
