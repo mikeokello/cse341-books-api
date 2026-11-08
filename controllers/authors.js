@@ -1,3 +1,4 @@
+ // Authors CRUD - W02 - closes #4
 const { getDb } = require('../db/connect');
 
 const getAllAuthors = async (req, res) => {
@@ -32,7 +33,7 @@ const createAuthor = async (req, res) => {
     const db = getDb();
     const existing = await db.collection('authors').findOne({ id });
     if (existing) {
-      return res.status(400).json({ message: 'Author id already exists.' });
+      return res.status(409).json({ message: 'Author id already exists.' });
     }
     const newAuthor = { id, name, birthYear };
     await db.collection('authors').insertOne(newAuthor);
@@ -66,6 +67,10 @@ const deleteAuthor = async (req, res) => {
     const existing = await db.collection('authors').findOne({ id: req.params.id });
     if (!existing) {
       return res.status(404).json({ message: 'Author not found.' });
+    }
+    const bookUsing = await db.collection('books').findOne({ authorId: req.params.id });
+    if (bookUsing) {
+      return res.status(409).json({ message: 'Cannot delete author with existing books.' });
     }
     await db.collection('authors').deleteOne({ id: req.params.id });
     return res.status(204).send();

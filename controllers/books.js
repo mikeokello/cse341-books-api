@@ -1,3 +1,4 @@
+// Books CRUD - W02 - closes #3
 const { getDb } = require('../db/connect');
 
 const getAllBooks = async (req, res) => {
