@@ -1,6 +1,6 @@
- // Authors CRUD - W02 - closes #4
+// Authors CRUD - W02 - closes #4
+// GET, POST, PUT, DELETE for authors collection
 const { getDb } = require('../db/connect');
-
 const getAllAuthors = async (req, res) => {
   try {
     const db = getDb();
