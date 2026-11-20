@@ -1,10 +1,10 @@
-// Books CRUD - W02 - closes #3
-const { getDb } = require('../db/connect');
+// Books CRUD - W03 Mongoose
+const Book = require('../models/book');
+const Author = require('../models/author');
 
 const getAllBooks = async (req, res) => {
   try {
-    const db = getDb();
-    const books = await db.collection('books').find({}).toArray();
+    const books = await Book.find({});
     return res.status(200).json(books);
   } catch (error) {
     return res.status(500).json({ message: 'Unable to retrieve books.' });
@@ -13,8 +13,7 @@ const getAllBooks = async (req, res) => {
 
 const getBookById = async (req, res) => {
   try {
-    const db = getDb();
-    const book = await db.collection('books').findOne({ id: req.params.id });
+    const book = await Book.findOne({ id: req.params.id });
     if (!book) {
       return res.status(404).json({ message: 'Book not found.' });
     }
@@ -30,17 +29,15 @@ const createBook = async (req, res) => {
     if (!id || !authorId || !title || !publicationDate) {
       return res.status(400).json({ message: 'id, authorId, title, and publicationDate are required.' });
     }
-    const db = getDb();
-    const existing = await db.collection('books').findOne({ id });
+    const existing = await Book.findOne({ id });
     if (existing) {
       return res.status(400).json({ message: 'Book id already exists.' });
     }
-    const author = await db.collection('authors').findOne({ id: authorId });
+    const author = await Author.findOne({ id: authorId });
     if (!author) {
       return res.status(400).json({ message: 'authorId does not match an existing author.' });
     }
-    const newBook = { id, authorId, title, publicationDate };
-    await db.collection('books').insertOne(newBook);
+    const newBook = await Book.create({ id, authorId, title, publicationDate });
     return res.status(201).json(newBook);
   } catch (error) {
     return res.status(500).json({ message: 'Unable to create book.' });
@@ -53,16 +50,15 @@ const updateBook = async (req, res) => {
     if (!authorId || !title || !publicationDate) {
       return res.status(400).json({ message: 'authorId, title, and publicationDate are required.' });
     }
-    const db = getDb();
-    const existing = await db.collection('books').findOne({ id: req.params.id });
+    const existing = await Book.findOne({ id: req.params.id });
     if (!existing) {
       return res.status(404).json({ message: 'Book not found.' });
     }
-    const author = await db.collection('authors').findOne({ id: authorId });
+    const author = await Author.findOne({ id: authorId });
     if (!author) {
       return res.status(400).json({ message: 'authorId does not match an existing author.' });
     }
-    await db.collection('books').updateOne({ id: req.params.id }, { $set: { authorId, title, publicationDate } });
+    await Book.updateOne({ id: req.params.id }, { $set: { authorId, title, publicationDate } });
     return res.status(200).json({ id: req.params.id, authorId, title, publicationDate });
   } catch (error) {
     return res.status(500).json({ message: 'Unable to update book.' });
@@ -71,12 +67,11 @@ const updateBook = async (req, res) => {
 
 const deleteBook = async (req, res) => {
   try {
-    const db = getDb();
-    const existing = await db.collection('books').findOne({ id: req.params.id });
+    const existing = await Book.findOne({ id: req.params.id });
     if (!existing) {
       return res.status(404).json({ message: 'Book not found.' });
     }
-    await db.collection('books').deleteOne({ id: req.params.id });
+    await Book.deleteOne({ id: req.params.id });
     return res.status(204).send();
   } catch (error) {
     return res.status(500).json({ message: 'Unable to delete book.' });

@@ -1,6 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const mongodb = require('./db/connect');
+const db = require('./db/connect');
 const swaggerUi = require('swagger-ui-express');
 const fs = require('fs');
 
@@ -24,7 +24,7 @@ if (fs.existsSync('./swagger.json')) {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 }
 
-mongodb.initDb((err) => {
+db.initDb((err) => {
   if (err) {
     console.log(err);
   } else {
